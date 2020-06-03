@@ -8,23 +8,25 @@ canvas.height = 1200;
 let radius = 5;
 
 let v1 = new PVector(5, 5)
-let v2 = new PVector(7, 7)
-
-let v3 = v1.add(v2);
-
-console.log(v3);
-console.log(v3.sub(v1));
-
-console.log(v1);
-console.log(v1.get());
-console.log(v1.mag());
-
-v1.set(10, 10)
-console.log(v1);
+let v2 = PVector.fromAngle(0);// new PVector(-10, -1)
+v2.setMag(10);
 
 
 
-//setInterval(draw, 20);
+let v3 = PVector.random2d();
+
+
+
+console.log(v2);
+console.log(v2.angleBetween(v1));
+
+
+
+
+
+
+
+setInterval(draw, 20);
 
 
 function particle(x, y, dx, dy){
@@ -59,5 +61,18 @@ function drawParticle(particle){
 
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawParticle(p1);
+    // drawParticle(p1);
+
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2, 20, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.lineWidth = 10;
+    ctx.moveTo(canvas.width/2, canvas.height/2);
+    ctx.lineTo(canvas.width/2 + 20*v2.x, canvas.height/2 + 20*v2.y);
+    ctx.stroke();
+
+    console.log(v2.heading());
+   v2.rotate(1);
+
+   
 }
