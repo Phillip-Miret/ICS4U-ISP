@@ -1,3 +1,4 @@
+
 const canvas =document.getElementById("Canvas");
 const ctx = canvas.getContext("2d");
 
@@ -5,16 +6,37 @@ canvas.width = 1920;
 canvas.height = 1200;
 
 let radius = 5;
-let p1 = new particle(5,5, 2, 2)
 
-setInterval(draw, 20);
+let v1 = new PVector(5, 5)
+let v2 = new PVector(7, 7)
+
+let v3 = v1.add(v2);
+
+console.log(v3);
+console.log(v3.sub(v1));
+
+console.log(v1);
+console.log(v1.get());
+console.log(v1.mag());
+
+v1.set(10, 10)
+console.log(v1);
+
+
+
+//setInterval(draw, 20);
+
 
 function particle(x, y, dx, dy){
-    this.x = x;
-    this.y = y;
-    this.dx = dx;
-    this.dy = dy;
+    
+    let location = new PVector(x, y);
+    let velocity = new PVector(dx, dy);
+    
 }
+
+
+
+
 
 function drawParticle(particle){
 
