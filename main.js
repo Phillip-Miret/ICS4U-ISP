@@ -22,16 +22,17 @@ console.log(v2);
 
 
 
-let p1 = new particle(canvas.width/2, canvas.height/2, 0,0);
+let p1 = new particle(canvas.width/2, canvas.height/2, 5,5, 0,0);
 
 
 
 setInterval(draw, 20);
 
 
-function particle(x, y, dx, dy){   
-    this.location = new PVector(x, y);
-    this.velocity = new PVector(dx, dy);
+function particle(x, y, dx, dy, ax, ay){   
+    this.loc = new PVector(x, y); //location
+    this.vel = new PVector(dx, dy);
+    this.acc = new PVector(ax, ay);
     
 }
 
@@ -39,38 +40,48 @@ function particle(x, y, dx, dy){
 
 
 
-function drawParticle(particle){
+function drawParticle(p){
 
     ctx.beginPath();
-    ctx.arc(particle.location.x, particle.location.y, radius, 0, 2*Math.PI);
+    ctx.arc(p.loc.x, p.loc.y, radius, 0, 2*Math.PI);
     ctx.fill();
     
 
-    if(particle.location.x >= canvas.width || particle.location.x <= 0)
-        particle.dx *= -1;
+    if(p.loc.x >= canvas.width || p.loc.x <= 0)
+        p.vel.x *= -1;
 
-     if(particle.location.y >= canvas.height || particle.location.y <= 0)
-        particle.dy *= -1;
-
- 
-
+     if(p.loc.y >= canvas.height || p.loc.y <= 0)
+        p.vel.y *= -1;
     
+   // p.acc = PVector.random2d();
+
+    p.loc = p.loc.add(p.vel);
+    p.vel = p.vel.add(p.acc);
+
 }
 
-function draw(){
+// window.addEventListener('mousemove', function(e){
+//     console.log(e);
+//     console.log(e.clientX -(window.innerWidth-canvas.width )/2);
+//     console.log(e.clientY - (window.innerHeight-canvas.height)/2)
+  
+//     let mouse = new PVector(e.clientX -(window.innerWidth-canvas.width )/2, e.clientY - (window.innerHeight-canvas.height)/2);
+//     console.log(mouse);
+//     mouse = mouse.sub(p1.loc);
+//     mouse.setMag(0.1);
+//     p1.acc = mouse;
+// });
+
+
+
+
+function draw(e){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
      drawParticle(p1);
 
-//     ctx.beginPath();
-//     ctx.arc(canvas.width/2, canvas.height/2, 20, 0, 2*Math.PI);
-//     ctx.fill();
-//     ctx.lineWidth = 10;
-//     ctx.moveTo(canvas.width/2, canvas.height/2);
-//     ctx.lineTo(canvas.width/2 + 20*v2.x, canvas.height/2 + 20*v2.y);
-//     ctx.stroke();
+  
+        // p1.acc.set(event.clientX, event.clientY)
+    
 
-//     console.log(v2.angleBetween(v1));
-//    v2.rotate(1);
-
-   
+ 
 }
