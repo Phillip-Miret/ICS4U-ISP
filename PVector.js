@@ -1,5 +1,7 @@
 class PVector{
 
+    
+
     constructor(x, y){
         this.x = x;
         this.y = y;
@@ -63,10 +65,20 @@ class PVector{
     }
     
     normalize(){
+        if(this.x !== 0 && this.y !== 0){
         let tempMag = this.mag();
         this.x /= tempMag;
         this.y /= tempMag;
+    } else if(this.x === 0 && this.y === 0){
     }
+        else if(this.x === 0){
+        let tempMag = this.mag();
+        this.y /= tempMag;
+    } else if(this.y === 0){
+        let tempMag = this.mag();
+        this.x /= tempMag;
+    } 
+}
 
     setMag(newMag){
         this.normalize();
