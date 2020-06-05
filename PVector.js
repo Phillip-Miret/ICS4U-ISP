@@ -105,6 +105,10 @@ class PVector{
         return Math.acos((this.dot(v2))/(this.mag()*v2.mag()))*(180/Math.PI);
     }
 
+    getTangent(){
+        return new PVector(-this.y, this.x);
+    }
+
     
 
 

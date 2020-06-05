@@ -64,6 +64,37 @@ class particle{
         return false;
     }
     collide(p2){
-        
+        let nVect = this.loc.sub(p2.loc);
+        nVect.normalize();
+        let uTan = nVect.getTangent();
+        console.log(nVect + " " + uTan)
+
+        let correction = nVect.mult(2*radius);
+        let newVec = p2.loc.add(correction);
+        this.loc = newVec;
+
+        let a = this.vel;
+        let b = p2.vel;
+
+        let a_n = a.dot(nVect);
+        let b_n = b.dot(nVect);
+        let a_t = a.dot(uTan);
+        let b_t = b.dot(uTan);
+
+        let a_nFinal = (a_n * (this.mass - p2.mass) + 2 * p2.mass * b_n) / (this.mass + p2.mass);
+        let b_nFinal = (b_n * (p2.mass - this.mass) + 2 * this.mass * a_n) / (this.mass + p2.mass);
+
+        let a_nAfter = nVect.mult(a_nFinal);
+        let b_nAfter = nVect.mult(b_nFinal);
+        let a_tAfter = uTan.mult(a_t);
+        let b_tAfter = uTan.mult(b_t);
+
+        let aAfter = a_nAfter.add(a_tAfter);
+        let bAfter = b_nAfter.add(b_tAfter);
+
+        this.vel = aAfter;
+        p2.vel = bAfter;
+
+
     }
 }

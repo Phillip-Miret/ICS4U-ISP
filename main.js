@@ -7,18 +7,18 @@ canvas.height = 1200;
 
 let radius = 20;
 
-let pArr = new Array(2); 
+let pArr = new Array(200); 
 
 for(let i = 0; i < pArr.length; i++){
-    pArr[i] = new particle(Math.random()* canvas.width, canvas.height/2, 0,0, 0,0,1);
+    pArr[i] = new particle((Math.random()* (canvas.width - radius - 1)) + (radius+ 1), (Math.random()* (canvas.height - radius - 1)) + (radius+ 1), 0,0, 0,0,1);
 }
 
 
-let f1 = new PVector(1,0);
-let gravity = new PVector(0,0);
+let f1 = new PVector(0,0);
+let gravity = new PVector(0,0.7);
 
 
-let MuF = 0.05;
+let MuF = 0.5;
 
 
 
@@ -43,6 +43,7 @@ function drawAll(p){
     tempGrav = gravity.mult(p.mass)  
     p.applyForce(tempGrav);
     p.applyFriction(MuF); 
+   gravity.rotate(0.002);
 } 
 
 
