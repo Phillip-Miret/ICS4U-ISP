@@ -5,9 +5,9 @@ const ctx = canvas.getContext("2d");
 canvas.width = 1920;
 canvas.height = 1200;
 
-let radius = 20;
+let radius = 5;
 
-let pArr = new Array(200); 
+let pArr = new Array(1000); 
 
 for(let i = 0; i < pArr.length; i++){
     pArr[i] = new particle((Math.random()* (canvas.width - radius - 1)) + (radius+ 1), (Math.random()* (canvas.height - radius - 1)) + (radius+ 1), 0,0, 0,0,1);
@@ -15,11 +15,12 @@ for(let i = 0; i < pArr.length; i++){
 
 
 let f1 = new PVector(0,0);
-let gravity = new PVector(0,0.7);
+let gravity = new PVector(0,0.1);
 
 
-let MuF = 0.5;
+let MuF = 0.05;
 
+let t = 0;
 
 
 
@@ -43,7 +44,15 @@ function drawAll(p){
     tempGrav = gravity.mult(p.mass)  
     p.applyForce(tempGrav);
     p.applyFriction(MuF); 
-   gravity.rotate(0.002);
+
+    gravity.rotate(0.0002)
+
+    // t++;
+    // if (t > 600){
+    //     gravity.rotate(90);
+    //     t = 0;
+    // }
+   
 } 
 
 
