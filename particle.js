@@ -7,7 +7,7 @@ class particle{
     }
    
     drawParticle(){
-        let nRadius = radius*this.mass;
+        let nRadius = radius/**this.mass*/;
 
         ctx.beginPath();
         ctx.arc(this.loc.x, this.loc.y, nRadius, 0, 2*Math.PI);

@@ -5,9 +5,26 @@ const ctx = canvas.getContext("2d");
 canvas.width = 1920;
 canvas.height = 1200;
 
+let mouseDown = false;
+
+canvas.addEventListener("mousemove", (e) => {
+    if(mouseDown){
+        pArr.push(new particle(e.clientX - (window.innerWidth - canvas.width)/2 ,e.clientY - (window.innerHeight - canvas.height)/2, (Math.random() * 5 - 2.5), (Math.random() * 5- 2.5), 0, 0, 1));
+    }
+});
+
+canvas.addEventListener("mousedown",(e) => {
+     mouseDown = true;
+});
+canvas.addEventListener("mouseup",(e) => {
+    mouseDown = false
+});
+
+
+
 let radius = 5;
 
-let pArr = new Array(1000); 
+let pArr = new Array(10); 
 
 for(let i = 0; i < pArr.length; i++){
     pArr[i] = new particle((Math.random()* (canvas.width - radius - 1)) + (radius+ 1), (Math.random()* (canvas.height - radius - 1)) + (radius+ 1), 0,0, 0,0,1);
@@ -15,12 +32,11 @@ for(let i = 0; i < pArr.length; i++){
 
 
 let f1 = new PVector(0,0);
-let gravity = new PVector(0,0.1);
+let gravity = new PVector(0,0.5);
 
 
-let MuF = 0.05;
+let MuF = 0.4;
 
-let t = 0;
 
 
 
@@ -45,7 +61,7 @@ function drawAll(p){
     p.applyForce(tempGrav);
     p.applyFriction(MuF); 
 
-    gravity.rotate(0.0002)
+   // gravity.rotate(0.0002)
 
     // t++;
     // if (t > 600){
@@ -60,6 +76,7 @@ function drawAll(p){
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     pArr.forEach(drawAll);
-    
+
+    console.log(mouseDown);
 
 }
