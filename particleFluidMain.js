@@ -22,7 +22,7 @@ canvas.addEventListener("mouseup",(e) => {
 
 
 
-let radius = 5;
+let radius = 20;
 
 let pArr = new Array(10); 
 
@@ -31,11 +31,11 @@ for(let i = 0; i < pArr.length; i++){
 }
 
 
-let f1 = new PVector(0,0);
-let gravity = new PVector(0,0.5);
+let f1 = new PVector(0.1,0);
+let gravity = new PVector(0,0.1);
 
 
-let MuF = 0.4;
+let MuF = 0;
 
 
 
@@ -61,7 +61,7 @@ function drawAll(p){
     p.applyForce(tempGrav);
     p.applyFriction(MuF); 
 
-   // gravity.rotate(0.0002)
+  // gravity.rotate(0.001)
 
     // t++;
     // if (t > 600){

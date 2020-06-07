@@ -1,8 +1,19 @@
-const N = 64;
-const scale = 10;
+const N = 128;
+const scale = 8;
 const iterations = 4;
 
+let maxP = 0;
+
+function limit(num, min, max){
+    const MIN = min;
+    const MAX = max;
+    const parsed = parseInt(num)
+    return Math.min(Math.max(parsed, MIN), MAX)
+  }
+
 function IX (x, y){
+    x = limit(x, 0 ,N-1);
+    y = limit(y, 0, N-1);
     return x + (y * N);
 }
 
@@ -28,7 +39,7 @@ class fluid {
 
     addDensity(x, y, amount){
         let index = IX(x,y);
-        console.log(index);
+        
 
         this.density[index] += amount;
     }
@@ -41,17 +52,37 @@ class fluid {
     } 
 
     displayDensity(){
+     //  maxP = 0;
+        for(let i = 0; i < N; i++){
+            for(let j = 0; j < N; j++){
+                if( this.density[IX(i, j)] > maxP){
+                    maxP = this.density[IX(i, j)];
+                }
+            }
+        }
         for(let i = 0; i < N; i++){
             for(let j = 0; j < N; j++){
                 let x = i*scale;
                 let y = j*scale;
+                
+                //this.density[IX(i, j)] = this.scaleValue(this.density[IX(i, j)], 0, maxP, 0, 1)
                 let d = this.density[IX(i, j)];
 
+
                 ctx.beginPath();
+                if (d > 1){
+                    d = 0.99999;
+                }
+
                ctx.globalAlpha = d;
+               
+               
+              
                 ctx.rect(x, y, scale, scale);
                 ctx.fill();
                 ctx.closePath();
+
+                
             }
         }
     }
@@ -224,5 +255,11 @@ set_bnd(b, xArr){
    this.diffuse(0, s, density, diff, dt);
    this.advect(0, density, s, Vx, Vy, dt);
     }
+
+    scaleValue(x, in_min, in_max, out_min, out_max) {
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+      }
+
+    
 }
 
