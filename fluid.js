@@ -52,26 +52,20 @@ class fluid {
     } 
 
     displayDensity(){
-     //  maxP = 0;
-        for(let i = 0; i < N; i++){
-            for(let j = 0; j < N; j++){
-                if( this.density[IX(i, j)] > maxP){
-                    maxP = this.density[IX(i, j)];
-                }
-            }
-        }
+     
+    
         for(let i = 0; i < N; i++){
             for(let j = 0; j < N; j++){
                 let x = i*scale;
                 let y = j*scale;
                 
-                //this.density[IX(i, j)] = this.scaleValue(this.density[IX(i, j)], 0, maxP, 0, 1)
+             
                 let d = this.density[IX(i, j)];
 
 
                 ctx.beginPath();
                 if (d > 1){
-                    d = 0.99999;
+                    d = 1;
                 }
 
                ctx.globalAlpha = d;
