@@ -99,8 +99,10 @@ class fluid {
                 ctx.beginPath();
                ctx.globalAlpha = d;
               ctx.rect(tempPV.x*scale, tempPV.y*scale, scale, scale);
+              ctx.fillStyle = "black";
             ctx.fill();
-            ctx.closePath();                
+            ctx.closePath();   
+            ctx.globalAlpha = 1;             
             }
         }
     }
