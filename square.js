@@ -1,5 +1,5 @@
 let squares = new Array;
-let squareWidth = 75;
+let squareWidth = 80;
 
 
 function drawSquares(sqrArr){

@@ -1,5 +1,5 @@
-const N = 128;
-const scale = 8;
+const N = 4;
+const scale = 128;
 const iterations = 4;
 
 let maxP = 0;

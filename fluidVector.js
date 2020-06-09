@@ -24,10 +24,28 @@ function IX2(pos){
 
 }
 
+function renderSquares(){
+    let adjWidth = Math.round(squareWidth/scale);
+  
+    squares.forEach(e => {        
+        for(let i = 0; i < adjWidth*adjWidth; i++){  
+            ctx.beginPath();    
+            ctx.rect(e.x, e.y, Math.round(squareWidth), Math.round(squareWidth));
+            ctx.fillStyle = "blue";
+            ctx.fill();
+            ctx.rect(e.x, e.y, Math.round(squareWidth), Math.round(squareWidth));
+            ctx.strokeStyle = "#00FFFF";
+            ctx.stroke();
+            ctx.closePath();             
+        }
+    });
+
+}
+
 class fluid {
 
     constructor( dt, diffusion, viscosity){
-        this.size = N
+        this.size = N;
         this.dt = dt;
         this.diff = diffusion;
         this.visc = viscosity;
@@ -35,22 +53,23 @@ class fluid {
         this.s = new Array(N*N).fill(0); 
         this.density = new Array(N*N).fill(0);
 
-        this.V = new Array(N*N).fill(new PVector(0,0));
+       // this.V = new Array(N*N).fill(new PVector(0,0));
         
         this.Vx = new Array(N*N).fill(0); 
         this.Vy = new Array(N*N).fill(0);
 
-        this.V0 = new Array(N*N).fill(new PVector(0,0));
+        //this.V0 = new Array(N*N).fill(new PVector(0,0));
 
         this.Vx0 = new Array(N*N).fill(0);
         this.Vy0 = new Array(N*N).fill(0);     
     }
+
     step(){
     
         let visc     = this.visc;
         let diff     = this.diff;
         let dt       = this.dt;
-        let V        = this.V;// everything after this is an array;
+      //  let V        = this.V;// everything after this is an array;
         let Vx     = this.Vx; 
         let Vy      = this.Vy;
         let V0      = this.V0;
@@ -62,17 +81,38 @@ class fluid {
         this.diffuse(1, Vx0, Vx, visc, dt);
         this.diffuse(2, Vy0, Vy, visc, dt);
     
-    this.project(Vx0, Vy0, Vx, Vy);
+         this.project(Vx0, Vy0, Vx, Vy);
         
-    this.advect(1, Vx, Vx0, Vx0, Vy0, dt);
-    this.advect(2, Vy, Vy0, Vx0, Vy0, dt);
+        this.advection(1, Vx, Vx0, Vx0, Vy0, dt);
+        this.advection(2, Vy, Vy0, Vx0, Vy0, dt);
     
         
-    this.project(Vx, Vy, Vx0, Vy0);
+        this.project(Vx, Vy, Vx0, Vy0);
         
-    this.diffuse(0, s, density, diff, dt);
-    this.advect(0, density, s, Vx, Vy, dt);
+        this.diffuse(0, s, density, diff, dt);
+        this.advection(0, density, s, Vx, Vy, dt);
+
         }
+
+     displayDensity(){
+            for(let i = 0; i < N; i++){
+                for(let j = 0; j < N; j++){
+                    let tempPV = new PVector(i, j);
+                    let d = this.density[IX2(tempPV)];
+                    if (d > 1){
+                        d = 1;
+                    }
+    
+                ctx.beginPath();
+                ctx.globalAlpha = d;
+                ctx.rect(tempPV.x*scale, tempPV.y*scale, scale, scale);
+                ctx.fillStyle = "black";
+                ctx.fill();
+                ctx.closePath();   
+                ctx.globalAlpha = 1;             
+                }
+            }
+        } 
 
 
     addDensity(pos, amount){
@@ -87,25 +127,9 @@ class fluid {
 
     } 
 
-    displayDensity(){
-        for(let i = 0; i < N; i++){
-            for(let j = 0; j < N; j++){
-                let tempPV = new PVector(i, j);
-                let d = this.density[IX2(tempPV)];
-                if (d > 1){
-                    d = 1;
-                }
+   
 
-                ctx.beginPath();
-               ctx.globalAlpha = d;
-              ctx.rect(tempPV.x*scale, tempPV.y*scale, scale, scale);
-              ctx.fillStyle = "black";
-            ctx.fill();
-            ctx.closePath();   
-            ctx.globalAlpha = 1;             
-            }
-        }
-    }
+   
 
         diffuse(b, xArr, x0Arr, diff, dt){
             let a = dt * diff * (N - 2) * (N - 2);
@@ -113,7 +137,7 @@ class fluid {
 
         }
 
-      //  projectV(vel,)
+      
 
         project(velocXArr, velocYArr, pArr, divArr){
         
@@ -141,36 +165,31 @@ class fluid {
     }
 
 
-    advect(b, dArr, d0Arr,  velocXArr, velocYArr, dt){
+    advection(b, dArr, d0Arr,  velocXArr, velocYArr, dt){ 
         let i0, i1, j0, j1;
         
         let dtx = dt * (N - 2);
         let dty = dt * (N - 2);
-    
-        
+      
         let s0, s1, t0, t1;
         let tmp1, tmp2, x, y;
         
-        let Nfloat = N;
-        let ifloat, jfloat;
-        let i, j;
-        
-    
-            for(j = 1, jfloat = 1; j < N - 1; j++, jfloat++) { 
-                for(i = 1, ifloat = 1; i < N - 1; i++, ifloat++) {
+           
+            for( let j = 1; j < N - 1; j++) { 
+                for( let i = 1; i < N - 1; i++) {
                     tmp1 = dtx * velocXArr[IX(i, j)];
                     tmp2 = dty * velocYArr[IX(i, j)];
                 
-                    x    = ifloat - tmp1; 
-                    y    = jfloat - tmp2;
+                    x  = i - tmp1; 
+                    y  = j - tmp2;
                 
                     
                     if(x < 0.5) x = 0.5; 
-                    if(x > Nfloat + 0.5) x = Nfloat + 0.5; 
+                    if(x > N + 0.5) x = N + 0.5; 
                     i0 = Math.floor(x); 
                     i1 = i0 + 1.0;
                     if(y < 0.5) y = 0.5; 
-                    if(y > Nfloat + 0.5) y = Nfloat + 0.5; 
+                    if(y > N + 0.5) y = N + 0.5; 
                     j0 = Math.floor(y);
                     j1 = j0 + 1.0; 
                 
@@ -201,11 +220,11 @@ class fluid {
 
     lin_solve(b, x, x0, a, c){
     let cRecip = 1.0 / c;
-        for (let k = 0; k < iterations; k++) { 
+        for (let k = 0; k < iterations; k++) { //this line determines how accurate the linear solve calculation will be based on the # of iterations in reality it does not make a noticible difference to the eye
             for (let j = 1; j < N - 1; j++) {
                 for (let i = 1; i < N - 1; i++) {
                     x[IX(i, j)] =
-                        (x0[IX(i, j)] + a*(x[IX(i+1, j )] + x[IX(i-1, j)] + x[IX(i  , j+1)] + x[IX(i  , j-1)])) * cRecip;
+                        (x0[IX(i, j)] + a*(x[IX(i+1, j)] + x[IX(i-1, j)] + x[IX(i  , j+1)] + x[IX(i  , j-1)])) * cRecip;
                     }
                 }
             
@@ -216,32 +235,43 @@ class fluid {
 
     set_bnd(b, xArr){
     
-            for(let i = 1; i < N - 1; i++) {
-                xArr[IX(i, 0 )] = b == 2 ? -xArr[IX(i, 1 )] : xArr[IX(i, 1 )];
-                xArr[IX(i, N-1)] = b == 2 ? -xArr[IX(i, N-2)] : xArr[IX(i, N-2)];
-            }
-        
-        
-            for(let j = 1; j < N - 1; j++) {
-                xArr[IX(0  , j)] = b == 1 ? -xArr[IX(1  , j)] : xArr[IX(1  , j)];
-                xArr[IX(N-1, j)] = b == 1 ? -xArr[IX(N-2, j)] : xArr[IX(N-2, j)];
-            }
-        
-        
-        xArr[IX(0, 0)]       = 0.5 * (xArr[IX(1, 0)]
-                                    + xArr[IX(0, 1)]);
-                                    
-        xArr[IX(0, N-1)]     = 0.5 * (xArr[IX(1, N-1)]
-                                    + xArr[IX(0, N-2)]);
-                                    
-        xArr[IX(N-1, 0)]     = 0.5 * (xArr[IX(N-2, 0)]
-                                    + xArr[IX(N-1, 1)]);
-                                    
-        xArr[IX(N-1, N-1)]   = 0.5 * (xArr[IX(N-2, N-1)]
-                                    + xArr[IX(N-1, N-2)]);
-                            
-        }
+            for(let i = 1; i < N - 1; i++) { // y bounds
+                if(b == 2){
+                    xArr[IX(i, 0)] =  - xArr[IX(i, 1)];
+                    xArr[IX(i,N-1)] = - xArr[IX(i, N-2)];
 
+                }else{
+                    xArr[IX(i, 0)] = xArr[IX(i, 1)];
+                    xArr[IX(i,N-1)] =  xArr[IX(i, N-2)];
+                }     
+            }
+          
+            for(let j = 1; j < N - 1; j++) { // x bounds
+                if(b == 1){
+                    xArr[IX(0,j)] = -xArr[IX(1,j)];
+                    xArr[IX(N-1, j)] = -xArr[IX(N-2, j)];
+                } else {
+                    xArr[IX(0,j)] = xArr[IX(1,j)];
+                    xArr[IX(N-1, j)] = xArr[IX(N-2, j)];
+                }
+            }
+        
+        xArr[IX(0, 0)]       = 0.5 * (xArr[IX(1, 0)] + xArr[IX(0, 1)]);
+                                    
+        xArr[IX(0, N-1)]     = 0.5 * (xArr[IX(1, N-1)] + xArr[IX(0, N-2)]);
+                                    
+        xArr[IX(N-1, 0)]     = 0.5 * (xArr[IX(N-2, 0)] + xArr[IX(N-1, 1)]);
+                                    
+        xArr[IX(N-1, N-1)]   = 0.5 * (xArr[IX(N-2, N-1)] + xArr[IX(N-1, N-2)]);
+
+        //squareBnds(b, xArr);
+                            
+        } 
+
+
+        squareBnds(b, xArr){
+
+        }
       
 
     scaleValue(x, in_min, in_max, out_min, out_max) {

@@ -14,18 +14,12 @@ let mouseMoved = false;
 var temp;
 var temp2;
 
-let clickNum = 0;
 let hasSquare = false;
-
-
-
 
 let baseSquareCords = new PVector(((canvas.width-N*scale)/2 - squareWidth/2) + N*scale, canvas.height/2 - squareWidth/2);
 
 
 let Fluid1 = new fluid(0.1,0, 0);
-//console.log(Fluid1.scaleValue(6, 0, 10, 0,1));
-
 
 setInterval(draw, 20);
 
@@ -56,6 +50,7 @@ canvas.addEventListener("mouseup", (e) => {
             hasSquare = false;
      } else {
             clearInterval(temp2);
+            hasSquare = false;
         } 
     clearInterval(temp);
     canvas.onmousemove = function(e){
@@ -114,20 +109,19 @@ function drawVertLine(){
 
 
 
-
-
-
 function draw(){
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawVertLine();
     drawSquareAtPt(baseSquareCords);
-   
-    Fluid1.step();
+      
+    Fluid1.step();  
     Fluid1.displayDensity();
-    drawSquares(squares);
+    renderSquares();
+    
+    
     
   
-      createFluid(1);
+      createFluid(3);
 }
 
