@@ -6,17 +6,21 @@ const ctx = canvas.getContext("2d");
 canvas.width = N*scale + 256;
 canvas.height = N*scale;
 
-let createPosition = (canvas.height/2)/scale;
+
 
 let mouseX;
+let PrevMouseX;
 let mouseY;
+let PrevMouseY;
 let mouseMoved = false;
 var temp;
 var temp2;
 
 let hasSquare = false;
 
-let baseSquareCords = new PVector(((canvas.width-N*scale)/2 - squareWidth/2) + N*scale, canvas.height/2 - squareWidth/2);
+let baseSquareCords = new PVector(((canvas.width-N*scale)/2 - squareWidth/2) + N*scale, canvas.height/3 - squareWidth/2);
+let baseSourceCords  = new PVector(((canvas.width-N*scale)/2 - squareWidth/2) + N*scale,  canvas.height*2/3 - squareWidth/2);
+let sourceBlocks = new Array;
 
 
 let Fluid1 = new fluid(0.1,0, 0);
@@ -68,18 +72,12 @@ function squareHandler(){
         mouseX = eMove.clientX - (window.innerWidth - canvas.width)/2;
         mouseY = eMove.clientY - (window.innerHeight - canvas.height)/2;
         drawSquareAtPt(new PVector(mouseX - squareWidth/2, mouseY - squareWidth/2));
-      //  console.log("square");
+     
     } 
     
 }
 
 function clickedHandler(e){
-    // mouseX = e.clientX - (window.innerWidth - canvas.width)/2;
-    // mouseY = e.clientY - (window.innerHeight - canvas.height)/2;
-    // console.log(Math.round(mouseX/scale) , Math.round(mouseY/scale))
-    // console.log(IX(Math.round(mouseX/scale) , Math.round(mouseY/scale)));
-    // console.log(RIX(IX(Math.round(mouseX/scale) , Math.round(mouseY/scale))));
-
     canvas.onmousemove = function(eMove){
         mouseX = eMove.clientX - (window.innerWidth - canvas.width)/2;
         mouseY = eMove.clientY - (window.innerHeight - canvas.height)/2;
@@ -113,6 +111,11 @@ function drawVertLine(){
     ctx.closePath();
 } 
 
+function addSource(pos, vel){
+    Fluid1.addDensity(pos, 0.9);
+    Fluid1.addVelocity(pos.x, pos.y, vel.x, vel.y);
+}
+
 
 
 function draw(){
@@ -128,13 +131,13 @@ function draw(){
   
     
     
-//     createFluid(1);
-//     Fluid1.addDensity(new PVector((canvas.width/2)/scale, 5), 0.9);
-//    Fluid1.addVelocity((canvas.width/2)/scale, 5 , 0, 0.2);
-//    Fluid1.addDensity(new PVector((canvas.width/2)/scale - 5, 5), 0.9);
-//    Fluid1.addVelocity((canvas.width/2)/scale -5, 5 , 0, 0.2);
-//    Fluid1.addDensity(new PVector((canvas.width/2)/scale - 10, 5), 0.9);
-//    Fluid1.addVelocity((canvas.width/2)/scale -10, 5 , 0, 0.2);
+    createFluid(1);
+    Fluid1.addDensity(new PVector((canvas.width/2)/scale, 5), 0.9);
+   Fluid1.addVelocity((canvas.width/2)/scale, 5 , 0, 0.2);
+   Fluid1.addDensity(new PVector((canvas.width/2)/scale - 5, 5), 0.9);
+   Fluid1.addVelocity((canvas.width/2)/scale -5, 5 , 0, 0.2);
+   Fluid1.addDensity(new PVector((canvas.width/2)/scale - 10, 5), 0.9);
+   Fluid1.addVelocity((canvas.width/2)/scale -10, 5 , 0, 0.2);
 
 
 }

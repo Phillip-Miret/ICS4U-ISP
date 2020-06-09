@@ -133,7 +133,5 @@ class PVector{
 // rotate()	Rotate the vector by an angle (2D only)
 // angleBetween()	Calculate and return the angle between two vectors
 
-// limit()	Limit the magnitude of the vector
-// lerp()	Linear interpolate the vector to another vector
 
 
