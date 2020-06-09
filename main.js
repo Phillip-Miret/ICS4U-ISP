@@ -128,13 +128,13 @@ function draw(){
   
     
     
-    createFluid(1);
-    Fluid1.addDensity(new PVector((canvas.width/2)/scale, 5), 0.9);
-   Fluid1.addVelocity((canvas.width/2)/scale, 5 , 0, 0.2);
-   Fluid1.addDensity(new PVector((canvas.width/2)/scale - 5, 5), 0.9);
-   Fluid1.addVelocity((canvas.width/2)/scale -5, 5 , 0, 0.2);
-   Fluid1.addDensity(new PVector((canvas.width/2)/scale - 10, 5), 0.9);
-   Fluid1.addVelocity((canvas.width/2)/scale -10, 5 , 0, 0.2);
+//     createFluid(1);
+//     Fluid1.addDensity(new PVector((canvas.width/2)/scale, 5), 0.9);
+//    Fluid1.addVelocity((canvas.width/2)/scale, 5 , 0, 0.2);
+//    Fluid1.addDensity(new PVector((canvas.width/2)/scale - 5, 5), 0.9);
+//    Fluid1.addVelocity((canvas.width/2)/scale -5, 5 , 0, 0.2);
+//    Fluid1.addDensity(new PVector((canvas.width/2)/scale - 10, 5), 0.9);
+//    Fluid1.addVelocity((canvas.width/2)/scale -10, 5 , 0, 0.2);
 
 
 }
