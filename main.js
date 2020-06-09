@@ -68,12 +68,18 @@ function squareHandler(){
         mouseX = eMove.clientX - (window.innerWidth - canvas.width)/2;
         mouseY = eMove.clientY - (window.innerHeight - canvas.height)/2;
         drawSquareAtPt(new PVector(mouseX - squareWidth/2, mouseY - squareWidth/2));
-        console.log("square");
+      //  console.log("square");
     } 
     
 }
 
 function clickedHandler(e){
+    // mouseX = e.clientX - (window.innerWidth - canvas.width)/2;
+    // mouseY = e.clientY - (window.innerHeight - canvas.height)/2;
+    // console.log(Math.round(mouseX/scale) , Math.round(mouseY/scale))
+    // console.log(IX(Math.round(mouseX/scale) , Math.round(mouseY/scale)));
+    // console.log(RIX(IX(Math.round(mouseX/scale) , Math.round(mouseY/scale))));
+
     canvas.onmousemove = function(eMove){
         mouseX = eMove.clientX - (window.innerWidth - canvas.width)/2;
         mouseY = eMove.clientY - (window.innerHeight - canvas.height)/2;
@@ -112,16 +118,24 @@ function drawVertLine(){
 function draw(){
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawVertLine();
+   
     drawSquareAtPt(baseSquareCords);
-      
+   
+    drawVertLine();
+    renderSquares();
     Fluid1.step();  
     Fluid1.displayDensity();
-    renderSquares();
+  
+    
     
     createFluid(1);
-//     Fluid1.addDensity(new PVector((canvas.width/2)/scale, 5), 0.9);
-//     Fluid1.addVelocity((canvas.width/2)/scale, 5 , 0, 0.2);
+    Fluid1.addDensity(new PVector((canvas.width/2)/scale, 5), 0.9);
+   Fluid1.addVelocity((canvas.width/2)/scale, 5 , 0, 0.2);
+   Fluid1.addDensity(new PVector((canvas.width/2)/scale - 5, 5), 0.9);
+   Fluid1.addVelocity((canvas.width/2)/scale -5, 5 , 0, 0.2);
+   Fluid1.addDensity(new PVector((canvas.width/2)/scale - 10, 5), 0.9);
+   Fluid1.addVelocity((canvas.width/2)/scale -10, 5 , 0, 0.2);
+
 
 }
 

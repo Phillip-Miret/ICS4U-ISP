@@ -4,6 +4,8 @@ const iterations = 4;
 
 let maxP = 0;
 
+let adjustedWidth = Math.round(squareWidth/scale);
+
 function limit(num, min, max){
     const MIN = min;
     const MAX = max;
@@ -23,6 +25,13 @@ function IX2(pos){
     return x + (y * N);
 
 }
+
+function RIX (index){
+    let y = Math.floor(index/N);
+    let x = index % N;
+    return [x,y];
+}
+
 function  scaleValue(x, in_min, in_max, out_min, out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
@@ -46,6 +55,15 @@ function renderSquares(){
         
     });
 
+}
+
+function drawAtIndex(index, colour){
+    let XY = RIX(index);
+    ctx.beginPath();
+    ctx.rect(XY[0]*scale, XY[1]*scale, scale, scale);
+    ctx.fillStyle = colour;
+    ctx.fill();
+    ctx.closePath()
 }
 
 class fluid {
@@ -92,8 +110,24 @@ class fluid {
         
         this.diffuse(0, s, density, diff, dt);
         this.advection(0, density, s, Vx, Vy, dt);
+        this.clearSquares();
 
         }
+
+        clearSquares(){
+            let adjX;
+            let adjY;
+            squares.forEach(e =>{
+                adjX = Math.round(Math.round(scaleValue(e.x, 0, N*scale, 0, N)));
+                adjY = Math.round(Math.round(scaleValue(e.y, 0, N*scale, 0, N)));
+                for(let i = 0; i < adjustedWidth; i++){
+                    for(let j = 0; j < adjustedWidth; j++){
+                        this.density[IX(adjX + i, adjY + j)] = 0;
+                }
+            }
+        });
+    }
+    
 
      displayDensity(){
             for(let i = 0; i < N; i++){
@@ -103,14 +137,12 @@ class fluid {
                     if (d > 1){
                         d = 1;
                     }
-    
+                
                 ctx.beginPath();
                 ctx.globalAlpha = d;
                 ctx.rect(tempPV.x*scale, tempPV.y*scale, scale, scale);
-               ctx.fillStyle = "black";
-                ctx.fill();
-              
-                
+                ctx.fillStyle = "black";
+                ctx.fill();    
                 ctx.closePath();   
                 ctx.globalAlpha = 1;             
                 }
@@ -279,53 +311,32 @@ class fluid {
             squares.forEach(e => {
                 adjX = Math.round(Math.round(scaleValue(e.x, 0, N*scale, 0, N)));
                 adjY = Math.round(Math.round(scaleValue(e.y, 0, N*scale, 0, N)));
-
-                ctx.beginPath();
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = "black";
-                ctx.moveTo(adjX * scale, adjY * scale);
-                ctx.lineTo((adjX + adjW )* scale, adjY * scale);
-
-                ctx.moveTo(adjX * scale, adjY * scale);
-                ctx.lineTo((adjX )* scale, (adjY + adjW)  * scale);
-
-                ctx.stroke();
-                ctx.closePath();
             
+                for(let i = 0; i < adjW ; i++){ //y
+                    if(b==2){
+                        xArr[IX(adjX + i,adjY)] = -xArr[IX(adjX + i,adjY-1)];
+                        xArr[IX(adjX + i,(adjY + adjW -1))] = -xArr[IX(adjX + i,adjY + adjW)];    
+                    } 
 
-                for(let i = adjY - 1; i < (adjY + adjW +1); i++) { // y bounds
-                    if(b == 1){
-                        xArr[IX(adjY,i)] = -xArr[IX(adjY - 1,i)];
-                        xArr[IX((adjY + adjW +1), i)] = -xArr[IX((adjY + adjW +2), i)];
-                    } else {
-                        xArr[IX(adjY,i)] = xArr[IX(adjY - 1,i)];
-                        xArr[IX((adjY + adjW +1), i)] = xArr[IX((adjY + adjW +2), i)];
-                        
-                      
-                    }
                 }
 
-            // for(let j = adjX - 1; j < (adjX + adjW +1); j++) { // x bounds
-            //     if(b == 2){
-            //         xArr[IX(j, adjX)] =  - xArr[IX(j, adjX - 1)];
-            //         xArr[IX(j,(adjX + adjW +1))] = - xArr[IX(j, (adjX + adjW +2))];
-                    
+                for( let j = 0; j < adjW; j++){ //X
+                    if(b==1){  
+                        xArr[IX(adjX, adjY + j)] = -xArr[IX(adjX - 1, adjY + j)];
+                        xArr[IX(adjX + adjW -1, adjY + j)] = -xArr[IX(adjX + adjW ,adjY + j)];
 
-            //     }else{
-            //         xArr[IX(j, adjX)] = xArr[IX(j, adjX - 1)];
-            //         xArr[IX(j,(adjX + adjW +1))] =  xArr[IX(j, (adjX + adjW +2))];
-            //     }
-            // }
+                    } 
+                }
           
            
 
-            xArr[IX(adjX, adjY)] = (xArr[IX(adjX+1, adjY)] + xArr[IX(adjX, adjY+1)])/2;
+            xArr[IX(adjX-1, adjY-1)] = (xArr[IX(adjX-2, adjY-1)] + xArr[IX(adjX-1, adjY-2)])/2;
                                     
-            xArr[IX(adjX, (adjY + adjW -1))] = (xArr[IX(adjX+1, (adjY + adjW -1))] + xArr[IX(adjX, (adjY + adjW -2))])/2;
+             xArr[IX(adjX-1, (adjY + adjW))] = (xArr[IX(adjX-2, (adjY + adjW))] + xArr[IX(adjX -1, (adjY + adjW +1))])/2;
+                                      
+            xArr[IX((adjX + adjW), adjY -1)] = (xArr[IX((adjX + adjW+1), adjY -1)] + xArr[IX((adjX + adjW), adjY-2)])/2;
                                         
-            xArr[IX((adjX + adjW -1), adjY)] = (xArr[IX((adjX + adjW -2), adjY)] + xArr[IX((adjX + adjW -1), adjY+1)])/2;
-                                        
-            xArr[IX((adjX + adjW -1),(adjY + adjW -1))] = (xArr[IX((adjX + adjW -2),(adjY + adjW -1))] + xArr[IX((adjX + adjW -1), (adjY + adjW -2))])/2;
+            xArr[IX((adjX + adjW),(adjY + adjW))] = (xArr[IX((adjX + adjW +1),(adjY + adjW))] + xArr[IX((adjX + adjW), (adjY + adjW +1))])/2;
         });
     }
       
