@@ -119,9 +119,9 @@ function draw(){
     Fluid1.displayDensity();
     renderSquares();
     
-    
-    
-  
-      createFluid(3);
+    createFluid(1);
+//     Fluid1.addDensity(new PVector((canvas.width/2)/scale, 5), 0.9);
+//     Fluid1.addVelocity((canvas.width/2)/scale, 5 , 0, 0.2);
+
 }
 

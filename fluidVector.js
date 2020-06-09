@@ -23,21 +23,27 @@ function IX2(pos){
     return x + (y * N);
 
 }
+function  scaleValue(x, in_min, in_max, out_min, out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
 
 function renderSquares(){
     let adjWidth = Math.round(squareWidth/scale);
+    let tempPV;
   
-    squares.forEach(e => {        
-        for(let i = 0; i < adjWidth*adjWidth; i++){  
+    squares.forEach(e => {  
+            tempPV = new PVector(Math.round(scaleValue(e.x, 0, N*scale, 0, N)), Math.round(scaleValue(e.y, 0, N*scale, 0, N)));    
             ctx.beginPath();    
-            ctx.rect(e.x, e.y, Math.round(squareWidth), Math.round(squareWidth));
+            ctx.rect(tempPV.x*scale, tempPV.y*scale, Math.round(squareWidth), Math.round(squareWidth));
             ctx.fillStyle = "blue";
             ctx.fill();
-            ctx.rect(e.x, e.y, Math.round(squareWidth), Math.round(squareWidth));
+            ctx.rect(tempPV.x*scale , tempPV.y*scale, Math.round(squareWidth), Math.round(squareWidth));
             ctx.strokeStyle = "#00FFFF";
+            ctx.lineWidth = 3;
             ctx.stroke();
-            ctx.closePath();             
-        }
+            ctx.closePath();   
+                    
+        
     });
 
 }
@@ -52,13 +58,9 @@ class fluid {
         
         this.s = new Array(N*N).fill(0); 
         this.density = new Array(N*N).fill(0);
-
-       // this.V = new Array(N*N).fill(new PVector(0,0));
         
         this.Vx = new Array(N*N).fill(0); 
         this.Vy = new Array(N*N).fill(0);
-
-        //this.V0 = new Array(N*N).fill(new PVector(0,0));
 
         this.Vx0 = new Array(N*N).fill(0);
         this.Vy0 = new Array(N*N).fill(0);     
@@ -69,7 +71,6 @@ class fluid {
         let visc     = this.visc;
         let diff     = this.diff;
         let dt       = this.dt;
-      //  let V        = this.V;// everything after this is an array;
         let Vx     = this.Vx; 
         let Vy      = this.Vy;
         let V0      = this.V0;
@@ -106,8 +107,10 @@ class fluid {
                 ctx.beginPath();
                 ctx.globalAlpha = d;
                 ctx.rect(tempPV.x*scale, tempPV.y*scale, scale, scale);
-                ctx.fillStyle = "black";
+               ctx.fillStyle = "black";
                 ctx.fill();
+              
+                
                 ctx.closePath();   
                 ctx.globalAlpha = 1;             
                 }
@@ -256,27 +259,78 @@ class fluid {
                 }
             }
         
-        xArr[IX(0, 0)]       = 0.5 * (xArr[IX(1, 0)] + xArr[IX(0, 1)]);
+        xArr[IX(0, 0)] = (xArr[IX(1, 0)] + xArr[IX(0, 1)])/2;
                                     
-        xArr[IX(0, N-1)]     = 0.5 * (xArr[IX(1, N-1)] + xArr[IX(0, N-2)]);
+        xArr[IX(0, N-1)] = (xArr[IX(1, N-1)] + xArr[IX(0, N-2)])/2;
                                     
-        xArr[IX(N-1, 0)]     = 0.5 * (xArr[IX(N-2, 0)] + xArr[IX(N-1, 1)]);
+        xArr[IX(N-1, 0)] = (xArr[IX(N-2, 0)] + xArr[IX(N-1, 1)])/2;
                                     
-        xArr[IX(N-1, N-1)]   = 0.5 * (xArr[IX(N-2, N-1)] + xArr[IX(N-1, N-2)]);
+        xArr[IX(N-1, N-1)] = (xArr[IX(N-2, N-1)] + xArr[IX(N-1, N-2)])/2;
 
-        //squareBnds(b, xArr);
+      this.squareBnds(b, xArr);
                             
         } 
 
 
         squareBnds(b, xArr){
+            let adjW = Math.round(squareWidth/scale);
+            let adjX;
+            let adjY;
+            squares.forEach(e => {
+                adjX = Math.round(Math.round(scaleValue(e.x, 0, N*scale, 0, N)));
+                adjY = Math.round(Math.round(scaleValue(e.y, 0, N*scale, 0, N)));
 
-        }
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "black";
+                ctx.moveTo(adjX * scale, adjY * scale);
+                ctx.lineTo((adjX + adjW )* scale, adjY * scale);
+
+                ctx.moveTo(adjX * scale, adjY * scale);
+                ctx.lineTo((adjX )* scale, (adjY + adjW)  * scale);
+
+                ctx.stroke();
+                ctx.closePath();
+            
+
+                for(let i = adjY - 1; i < (adjY + adjW +1); i++) { // y bounds
+                    if(b == 1){
+                        xArr[IX(adjY,i)] = -xArr[IX(adjY - 1,i)];
+                        xArr[IX((adjY + adjW +1), i)] = -xArr[IX((adjY + adjW +2), i)];
+                    } else {
+                        xArr[IX(adjY,i)] = xArr[IX(adjY - 1,i)];
+                        xArr[IX((adjY + adjW +1), i)] = xArr[IX((adjY + adjW +2), i)];
+                        
+                      
+                    }
+                }
+
+            // for(let j = adjX - 1; j < (adjX + adjW +1); j++) { // x bounds
+            //     if(b == 2){
+            //         xArr[IX(j, adjX)] =  - xArr[IX(j, adjX - 1)];
+            //         xArr[IX(j,(adjX + adjW +1))] = - xArr[IX(j, (adjX + adjW +2))];
+                    
+
+            //     }else{
+            //         xArr[IX(j, adjX)] = xArr[IX(j, adjX - 1)];
+            //         xArr[IX(j,(adjX + adjW +1))] =  xArr[IX(j, (adjX + adjW +2))];
+            //     }
+            // }
+          
+           
+
+            xArr[IX(adjX, adjY)] = (xArr[IX(adjX+1, adjY)] + xArr[IX(adjX, adjY+1)])/2;
+                                    
+            xArr[IX(adjX, (adjY + adjW -1))] = (xArr[IX(adjX+1, (adjY + adjW -1))] + xArr[IX(adjX, (adjY + adjW -2))])/2;
+                                        
+            xArr[IX((adjX + adjW -1), adjY)] = (xArr[IX((adjX + adjW -2), adjY)] + xArr[IX((adjX + adjW -1), adjY+1)])/2;
+                                        
+            xArr[IX((adjX + adjW -1),(adjY + adjW -1))] = (xArr[IX((adjX + adjW -2),(adjY + adjW -1))] + xArr[IX((adjX + adjW -1), (adjY + adjW -2))])/2;
+        });
+    }
       
 
-    scaleValue(x, in_min, in_max, out_min, out_max) {
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-      }
+   
 
     
 }
