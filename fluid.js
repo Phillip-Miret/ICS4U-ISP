@@ -110,6 +110,7 @@ class fluid {
         
         this.diffuse(0, s, density, diff, dt);
         this.advection(0, density, s, Vx, Vy, dt);
+        
         this.clearSquares();
 
         }
