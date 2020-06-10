@@ -251,6 +251,26 @@ function drawOgSource(cords){
 
 }
 
+function clearAll(){
+    clearFluid();
+    clearBlocks();
+    clearSources();
+} 
+
+function clearFluid(){
+    Fluid1 = new fluid(0.1,0,0);
+}
+
+function clearBlocks(){
+   squares = new Array;
+}
+
+function clearSources(){
+    sourceBlocks = new Array;
+}
+
+
+
 
 
 function draw(){
