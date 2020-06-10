@@ -12,11 +12,29 @@
             <button class = "vertical-center" type = "button" onclick="clearBlocks()">Clear The Blocks</button>
             <button class = "vertical-center" type = "button" onclick="clearSources()">Clear The Source Blocks</button> 
         </div>
+        <div id = "howToUse"> 
+            <h1 class = "info">Instructions:</h1>
+            <h2 class = "info1">1. Add Dye</h2>
+            <p class = "info2"> - Click and drag any part of the canvas to add dye.</p>
+            <h2 class = "info1">2. Place blocks</h2>
+            <p class = "info2"> - On the right (past the line), click and drag the red box <br> onto the canvas. It will turn blue once it is capable <br> of interacting with the fluid. </p>
+            <p class = "info2"> - by clicking and draging any blue box it can either be moved <br>around on the canvas, or destroyed by moving and dropping <br>it past the line on the right </p>
+            <h2 class = "info1">3. Placing Source blocks</h2>
+            <p class = "info2"> - By clicking the black square with a dot in the middle, <br>you can make a source block</p>
+            <p class = "info2"> - click and drag to the point on the canvas <br>you want the source block to go</p>
+            <p class = "info2"> - now click and drag on the canvas to the point <br> you want the source to flow</p>
+            <p class = "info2"> - if you hold down the mouse button and stop moving, <br> a blue line will appear, showing the <br> relative magnitute, and dricetion the source will be directed</p>
+            <p class = "info2"> - Release the mouse and a new source will be created <br>pointing in the same direction the mouse was</p>
+            <p class = "info2"> - Similarly to the blocks, sources can be moved by clicking <br>and draging them or destroyed by moving them past the line</p>
+
+
+
+
+        </div>
         <Canvas id="Canvas" 
         style="border:2px solid #000000;  padding: 0;
         margin: auto;
-        margin-top: 5%;
-        border-top: 7%;
+        
         display: block;
         
         position: absolute;
@@ -33,11 +51,24 @@
         <script src="main.js"></script>
 
         <style>
+            .info{
+                font-size: larger;
+                font-weight: bold;
+            }
+            .info1{
+                font-size: larger;
+                font-weight: bold;
+                padding-left: 1%;
+            }
+            .info2{
+                font-size: larger;
+                font-weight: bold;
+                padding-left: 2%;
+            }
             .container {
               /*height: 200px;*/
               position: relative;
-              padding-bottom: 2%;
-              padding-top: 2%;
+             
 
             }
             
