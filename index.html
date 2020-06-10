@@ -5,7 +5,13 @@
     </head>
     <body>
 
-        <div id="container">
+        <div id="container1">
+            <div class = "container" id= "buttons" >
+            <button class = "vertical-center" type = "button" onclick="clearAll()">Clear everything</button>
+           <button class = "vertical-center" type = "button" onclick="clearFluid()">Clear The Fluid</button>  
+            <button class = "vertical-center" type = "button" onclick="clearBlocks()">Clear The Blocks</button>
+            <button class = "vertical-center" type = "button" onclick="clearSources()">Clear The Source Blocks</button> 
+        </div>
         <Canvas id="Canvas" 
         style="border:2px solid #000000;  padding: 0;
         margin: auto;
@@ -23,6 +29,27 @@
         <script src ="square.js"></script>
         <script src="fluid.js"></script>       
         <script src="main.js"></script>
+
+        <style>
+            .container {
+              /*height: 200px;*/
+              position: relative;
+
+            }
+            
+            .vertical-center {
+                margin-top: 2%;
+                margin-left: 15%;
+                text-align: center;
+                font-size: larger;
+                font-weight: bold;
+             /* margin: 0;
+              position: absolute;
+              top: 50%;
+              -ms-transform: translateY(-50%);
+              transform: translateY(-50%);*/
+            }
+            </style>
         
 
 

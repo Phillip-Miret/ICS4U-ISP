@@ -41,7 +41,8 @@ canvas.addEventListener("mousedown", (e) => {
     console.log(mouseX + " " + mouseY);
 
     if(isOnSource(sourceBlocks, mouseX, mouseY) !== -1 && sourceClickStep === 0){
-        sourceBlocks.splice(isOnSquare(squares, mouseX, mouseY),1);
+        console.log("source");
+        sourceBlocks.splice(isOnSource(sourceBlocks, mouseX, mouseY),1);
         temp3 = setInterval(sourceHandler, 20, mouseX, mouseY);
     }
     else if(isOnSquare(squares, mouseX, mouseY) !== -1){
@@ -50,7 +51,6 @@ canvas.addEventListener("mousedown", (e) => {
     }
     else if(mouseX < N*scale){  
         if(sourceClickStep === 1){
-            //sourceClickStep = 0;
             console.log("other stuff")
             temp4 = setInterval(vecHandler, 20, mouseX, mouseY);  
         } else {
@@ -77,13 +77,14 @@ canvas.addEventListener("mouseup", (e) => {
         hasSource = false;
         sourceClickStep = 0;
         console.log(e.clientX + " " + e.clientY);
-//let tempVec = new PVector(Math.round((e.clientX - (window.innerWidth - canvas.width)/2)), Math.round((e.clientY - (window.innerHeight - canvas.height)/2)));
         let tempVec = new PVector(Math.round(mouseX/scale), Math.round(mouseY/scale));
         tempVec = tempVec.sub(sourceBlocks[sourceBlocks.length-1][0]);
         tempVec.setMag(tempVec.mag()/(6*scale));
         sourceBlocks[sourceBlocks.length-1][1] = tempVec;
         clearInterval(temp4);
         
+    }else {
+        clearInterval(temp4);
     }
     if(mouseX < N*scale  && hasSource && sourceClickStep === 0){
         sourceBlocks.push([new PVector(Math.round((e.clientX - (window.innerWidth - canvas.width)/2)/scale), Math.round((e.clientY - (window.innerHeight - canvas.height)/2)/scale)), 0]);
