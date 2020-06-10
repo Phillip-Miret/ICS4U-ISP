@@ -40,7 +40,11 @@ canvas.addEventListener("mousedown", (e) => {
     mouseY = e.clientY - (window.innerHeight - canvas.height)/2;
     console.log(mouseX + " " + mouseY);
 
-    if(isOnSquare(squares, mouseX, mouseY) !== -1){
+    if(isOnSource(sourceBlocks, mouseX, mouseY) !== -1 && sourceClickStep === 0){
+        sourceBlocks.splice(isOnSquare(squares, mouseX, mouseY),1);
+        temp3 = setInterval(sourceHandler, 20, mouseX, mouseY);
+    }
+    else if(isOnSquare(squares, mouseX, mouseY) !== -1){
         squares.splice(isOnSquare(squares, mouseX, mouseY),1);
         temp2 = setInterval(squareHandler, 20, mouseX, mouseY);
     }
@@ -189,19 +193,19 @@ function getMouseDirection(e){
    
 }
 
+function isOnSource(sArr, x, y){
+    for(let i = 0; i < sArr.length; i++){
+        if(x >= (sArr[i][0].x-1)*scale &&
+            x <= (sArr[i][0].x-1)*scale + scale*3 &&
+            y >= (sArr[i][0].y-1)*scale &&
+            y <= (sArr[i][0].y-1)*scale +scale*3){
+                return i;
+            } 
+    }
+    return -1;
+}
 
-    
 
-// function createFluid(input){
-//     for(let i = 0; i < input; i++){
-//         Fluid1.addDensity(new PVector(5, createPosition + 5*i), 0.9);
-//         Fluid1.addVelocity(5 , createPosition +5*i , 0.2, 0);
-
-//         Fluid1.addDensity(new PVector(5, createPosition - 5*i), 0.9);
-//         Fluid1.addVelocity(5 , createPosition -5*i , 0.2, 0);
-// }
-
-//}
 function drawVertLine(){
     ctx.beginPath();
     ctx.lineWidth = 5;
@@ -237,7 +241,7 @@ function drawOgSource(cords){
     ctx.rect((cords.x + squareWidth/2- scale/2), (cords.y + squareWidth/2- scale/2), scale, scale);
     ctx.fillStyle = "black";
     ctx.fill();
-    
+
     ctx.rect(cords.x, cords.y, squareWidth, squareWidth);
     ctx.lineWidth = 5;
     ctx.strokeStyle = "black";
