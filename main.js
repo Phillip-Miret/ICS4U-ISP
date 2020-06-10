@@ -1,11 +1,22 @@
 
+/*
+By Phillip Miret
+
+2D Navier-Stokes incompressible fluid simulation
+
+Date: 06/10/2020
+
+program functionality walkthrough/demonstration at https://youtu.be/p74O9OEjcAQ (2:15) no audio, sorry
+
+*/
+
+
 const canvas =document.getElementById("Canvas");
 const ctx = canvas.getContext("2d");
 
 
-canvas.width = N*scale + 256;
-canvas.height = N*scale;
-
+canvas.width = N*scale + 256; // N is the effective width in pixels of the screen this is multiplied by a scaling value to fill up more space. 
+canvas.height = N*scale; // This manages the lag produced by larger grid sizes (N values) by reducting the number of calculations needed this is also why the fluid seems pixelated 
 
 
 let mouseX;
@@ -22,18 +33,20 @@ var temp4
 let hasSquare = false;
 let hasSource = false;
 
-//let tempDrawSource = false;
-
 let sourceClickStep = 0;
 
-let baseSquareCords = new PVector(((canvas.width-N*scale)/2 - squareWidth/2) + N*scale, canvas.height/3 - squareWidth/2);
+let baseSquareCords = new PVector(((canvas.width-N*scale)/2 - squareWidth/2) + N*scale, canvas.height/3 - squareWidth/2); //  coordinates for the two reference sqaure on the right of the line
 let baseSourceCords  = new PVector(((canvas.width-N*scale)/2 - squareWidth/2) + N*scale,  canvas.height*2/3 - squareWidth/2);
+
 let sourceBlocks = new Array;
 
-
-let Fluid1 = new fluid(0.1,0, 0);
+let Fluid1 = new fluid(0.1,0,0);
 
 setInterval(draw, 20);
+
+/*
+    decide what to do when the mouse is pressed, based on the mouse's X and Y position on the canvas
+*/
 
 canvas.addEventListener("mousedown", (e) => {
     mouseX = e.clientX - (window.innerWidth - canvas.width)/2;
@@ -43,25 +56,25 @@ canvas.addEventListener("mousedown", (e) => {
     if(isOnSource(sourceBlocks, mouseX, mouseY) !== -1 && sourceClickStep === 0){
         console.log("source");
         sourceBlocks.splice(isOnSource(sourceBlocks, mouseX, mouseY),1);
-        temp3 = setInterval(sourceHandler, 20, mouseX, mouseY);
+        temp3 = setInterval(sourceHandler, 20, mouseX, mouseY); // makes the source follow the mouse
     }
     else if(isOnSquare(squares, mouseX, mouseY) !== -1){
         squares.splice(isOnSquare(squares, mouseX, mouseY),1);
-        temp2 = setInterval(squareHandler, 20, mouseX, mouseY);
+        temp2 = setInterval(squareHandler, 20, mouseX, mouseY); // makes the block follow the pointer
     }
     else if(mouseX < N*scale){  
         if(sourceClickStep === 1){
             console.log("other stuff")
-            temp4 = setInterval(vecHandler, 20, mouseX, mouseY);  
+            temp4 = setInterval(vecHandler, 20, mouseX, mouseY);  //draws a vector from the source point to the mouse
         } else {
-        temp = setInterval(clickedHandler, 20, e); 
+            temp = setInterval(clickedHandler, 20, e); // draws fluid at the pointer
         }      
     } else if (mouseX >= baseSquareCords.x &&
          mouseX <= baseSquareCords.x + squareWidth && 
          mouseY >= baseSquareCords.y && 
          mouseY <= baseSquareCords.y + squareWidth){
 
-         temp2 = setInterval(squareHandler, 20, mouseX, mouseY);  
+         temp2 = setInterval(squareHandler, 20, mouseX, mouseY);   
 
     } else if (mouseX >= baseSourceCords.x &&
         mouseX <= baseSourceCords.x + squareWidth && 
@@ -71,6 +84,10 @@ canvas.addEventListener("mousedown", (e) => {
         temp3 = setInterval(sourceHandler, 20, mouseX, mouseY);       
    }
 });
+/* 
+    when the mouse is no longer clicked this function determines what to 
+    do based on where the mouse is, and if ther is currently a block or source following the pointer
+*/ 
 
 canvas.addEventListener("mouseup", (e) => {
     if(sourceClickStep === 1){
@@ -108,7 +125,10 @@ canvas.addEventListener("mouseup", (e) => {
     canvas.onmousemove = function(e){
 
    } 
-});
+}); 
+/*
+constanty draws a square at the current mouse x and y
+*/
 
 function squareHandler(){
         drawSquareAtPt(new PVector(mouseX - squareWidth/2, mouseY - squareWidth/2));
@@ -122,6 +142,9 @@ function squareHandler(){
     } 
     
 }
+/*
+draws a source a the current mouse x and y
+*/
 
 function sourceHandler(){
     console.log("source");
@@ -142,6 +165,10 @@ function sourceHandler(){
         
     }
 }
+
+/*
+dras a vector to the current mouse x and y
+*/
 
 function vecHandler(){
     ctx.beginPath();
@@ -170,8 +197,11 @@ function vecHandler(){
         
      
     
+    }
 }
-}
+    /*
+    produces fluid at the pointer with an initial velocity that has the same direction vector as the mouse's movement direction (dFly/dFlx = dMy/dMx)
+*/
 function clickedHandler(e){
     canvas.onmousemove = function(eMove){
         let mouseDir = getMouseDirection(eMove);
@@ -185,6 +215,10 @@ function clickedHandler(e){
     Fluid1.addVelocity(Math.round(mouseX/scale) , Math.round(mouseY/scale) , (Math.random() * 3- 1.5), (Math.random() * 3- 1.5));
 }
 
+/*
+ calculates the mouse's current vector
+*/
+
 function getMouseDirection(e){
     let deltaX = e.clientX - (window.innerWidth - canvas.width)/2 - PrevMouseX;
     let deltaY = e.clientY - (window.innerHeight - canvas.height)/2 - PrevMouseY;
@@ -193,6 +227,10 @@ function getMouseDirection(e){
     return new PVector(deltaX, deltaY);
    
 }
+
+/*
+    determines if an x and y coordinate are on a source block and return the idex in the sourceblock array if true
+*/
 
 function isOnSource(sArr, x, y){
     for(let i = 0; i < sArr.length; i++){
@@ -217,6 +255,9 @@ function drawVertLine(){
     ctx.closePath();
 } 
 
+/*
+    the next 2 functions draw the source blocks and produce their stream of dye
+*/
 function addAllSourceBlocks(){
     sourceBlocks.forEach( e => {
         if(e[1] !== 0){
@@ -251,6 +292,10 @@ function drawOgSource(cords){
 
 }
 
+/*
+    these next four functions are the button methods
+*/
+
 function clearAll(){
     clearFluid();
     clearBlocks();
@@ -268,9 +313,6 @@ function clearBlocks(){
 function clearSources(){
     sourceBlocks = new Array;
 }
-
-
-
 
 
 function draw(){

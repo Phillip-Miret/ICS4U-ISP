@@ -1,3 +1,8 @@
+/*
+   I eneded up not using this class in the final simulation due to the simulation being grid based and not particle based
+*/
+
+
 class particle{
     constructor (x, y, dx, dy, ax, ay, mass){
         this.loc = new PVector(x, y); //location
@@ -7,7 +12,7 @@ class particle{
     }
    
     drawParticle(){
-        let nRadius = radius/**this.mass*/;
+        let nRadius = radius;
 
         ctx.beginPath();
         ctx.arc(this.loc.x, this.loc.y, nRadius, 0, 2*Math.PI);

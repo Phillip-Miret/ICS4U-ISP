@@ -1,6 +1,8 @@
-class PVector{
+/*
+    a general vector class based off of the class of the same name including in processing.js
+*/
 
-    
+class PVector{
 
     constructor(x, y){
         this.x = x;

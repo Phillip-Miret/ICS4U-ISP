@@ -1,3 +1,7 @@
+/*
+ the square class that hold the basic (non collision based) information about each of the blocks
+*/
+
 let squares = new Array;
 let squareWidth = 80;
 
